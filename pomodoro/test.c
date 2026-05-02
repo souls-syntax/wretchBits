@@ -3,30 +3,11 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <libnotify/notify.h>
-
-int main(int argc, char *argv[]) {
-  if (fork() != 0) exit(0);
-  setsid();
-  if (fork() != 0) exit(0);
-
-  int fd = open("/dev/null", O_RDWR);
-  dup2(fd, 0);
-  dup2(fd, 1);
-  dup2(fd, 2);
-  close(fd);
-
-  int interval = 60*25;
-  int count = 1;
-  if (argc >= 2) {
-	count = atoi(argv[1]);
-  }
-  if (argc == 3) {
-	interval = 60*(atoi(argv[2]));
-  }
+int main() {
 
   notify_init("wretchPomo");
-  
-  while (count > 0) {
+  int interval = 5;
+  while (1) {
     sleep(interval);
 
     NotifyNotification *n =
@@ -36,9 +17,7 @@ int main(int argc, char *argv[]) {
     notify_notification_show(n, NULL);
 
     g_object_unref(G_OBJECT(n));
-    count--;
   }
 
   notify_uninit();
-  return 0;
 }
